@@ -1,16 +1,34 @@
 package main
 
 import (
+	"bst/utils"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+type BST struct {
+	root *BSTNode
+}
+
+func BSTNew() *BST {
+	return new(BST)
+}
+
+func (t *BST) Insert(val int) {
+	t.root = t.root.insert(val)
+}
+
+func (t *BST) Delete(val int) {
+
+}
+
+func (t *BST) Exists(val int) bool {
+	return false
+}
+
+func (t *BST) Print() {
+	t.root.print()
 }
 
 type BSTNode struct {
@@ -20,17 +38,16 @@ type BSTNode struct {
 }
 
 func (t *BSTNode) insert(val int) *BSTNode {
-
-	return t
-}
-
-func (t *BSTNode) delete(val int) *BSTNode {
-
-	return t
-}
-
-func (t *BSTNode) search(val int) *BSTNode {
-
+	if t == nil {
+		return &BSTNode{
+			Val: val,
+		}
+	}
+	if val < t.Val {
+		t.Left = t.Left.insert(val)
+	} else if val > t.Val {
+		t.Right = t.Right.insert(val)
+	}
 	return t
 }
 
@@ -38,7 +55,7 @@ func (t *BSTNode) height() int {
 	if t == nil {
 		return 0
 	}
-	return 1 + max(t.Left.height(), t.Right.height())
+	return 1 + utils.Max(t.Left.height(), t.Right.height())
 }
 
 func (t *BSTNode) max() int {
@@ -51,17 +68,9 @@ func (t *BSTNode) max() int {
 	return t.Right.max()
 }
 
-func pad(s string, length int) string {
-	if len(s) >= length {
-		return s
-	}
-	pLen := length - len(s)
-	return strings.Repeat(" ", (pLen+1)/2) + s + strings.Repeat(" ", pLen-(pLen+1)/2)
-}
-
 func (t *BSTNode) print() {
 	h := t.height()
-	maxLen := max(len("nil"), len(strconv.Itoa(t.max())))
+	maxLen := utils.Max(len("nil"), len(strconv.Itoa(t.max())))
 	emptyString := strings.Repeat(" ", maxLen)
 	maxLineLen := 1<<uint(h) - 1
 	line := []*BSTNode{t}
@@ -76,10 +85,10 @@ func (t *BSTNode) print() {
 		}
 		for _, el := range line {
 			if el != nil {
-				fmt.Print(pad(strconv.Itoa(el.Val), maxLen))
+				fmt.Print(utils.Pad(strconv.Itoa(el.Val), maxLen))
 				newLine = append(newLine, el.Left, el.Right)
 			} else {
-				fmt.Print(pad("nil", maxLen))
+				fmt.Print(utils.Pad("nil", maxLen))
 				newLine = append(newLine, nil, nil)
 			}
 			fmt.Print(emptySpace)
@@ -90,28 +99,14 @@ func (t *BSTNode) print() {
 }
 
 func main() {
-	t := &BSTNode{
-		Val: 10,
-		Left: &BSTNode{
-			Val: 5,
-			Left: &BSTNode{
-				Val:   3,
-				Left:  nil,
-				Right: nil,
-			},
-			Right: &BSTNode{
-				Val:  6,
-				Left: nil,
-				Right: &BSTNode{
-					Val: 9,
-				},
-			},
-		},
-		Right: &BSTNode{
-			Val:   152,
-			Left:  nil,
-			Right: nil,
-		},
-	}
-	t.print()
+	t := BSTNew()
+	t.Insert(10)
+	t.Insert(5)
+	t.Insert(11)
+	t.Insert(12)
+	t.Insert(6)
+	t.Insert(7)
+	t.Insert(1)
+	t.Insert(8)
+	t.Print()
 }
